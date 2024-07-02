@@ -5,10 +5,16 @@ if ! [ -f "$1" ]; then
 fi
 
 width=80
+prefix=Documentation/
+here=$(pwd)
+
+if [ "$(basename \"$here\")" = 'Documentation' ]; then
+	prefix=
+fi
 
 fn="$1"
 bn=$(basename "$fn" .rst)
-man=$(find _build/man -name "$bn".'[0-9]')
+man=$(find ${prefix}_build/man -name "$bn".'[0-9]')
 
 cat << EOF
 <details>

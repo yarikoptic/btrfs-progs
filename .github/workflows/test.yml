@@ -13,13 +13,6 @@ jobs:
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v44
-      - name: Generate manual pages
-        env:
-          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-        run: |
-          for file in ${ALL_CHANGED_FILES}; do
-            echo "$file was changed"
-          done
       - run: uname -a
       - run: sudo modprobe btrfs
       - run: cat /proc/filesystems
@@ -37,3 +30,12 @@ jobs:
       - run: echo "::error::Test failed"
       - run: echo "It works :rocket:" >> $GITHUB_STEP_SUMMARY
       - run: tests/annotate.sh >> $GITHUB_STEP_SUMMARY
+      - run: make manpages
+      - name: Generate manual pages
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        run: |
+          for file in ${ALL_CHANGED_FILES}; do
+            echo "$file was changed, generate preview to summary"
+            Documentation/man-preview.sh "$file" >> $GITHUB_STEP_SUMMARY
+          done
